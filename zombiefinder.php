@@ -3,6 +3,56 @@
 require_once 'zombiefinder.civix.php';
 
 /**
+ * Implementation of hook_civicrm_check().
+ *
+ * Add a check to the status page/System.check results if $snafu is TRUE.
+ */
+function zombiefinder_civicrm_check(&$messages) {
+  // The API should be able to provide this (as below), but there are problems
+  // in both 4.6 and 4.7 with finding privacy preferences (Do not mail, etc.)
+  // that are null using the API.
+  //
+  // try {
+  //   $result = civicrm_api3('Contact', 'getcount', array(
+  //     'is_deceased' => array('IS NULL' => 1),
+  //   ));
+  // }
+  // catch (CiviCRM_API3_Exception $e) {
+  //   CRM_Core_Error::debug_log_message($e->getMessage());
+  // }
+
+  // Check for zombies.
+  $fieldsToCheck = CRM_Core_SelectValues::privacy();
+  $fieldsToCheck['is_deceased'] = ts('Is Deceased');
+  $fieldsToCheck['is_deleted'] = ts('Deleted');
+  $found = array();
+  foreach ($fieldsToCheck as $fieldName => $displayName) {
+    $sql = "SELECT COUNT(id) FROM civicrm_contact WHERE {$fieldName} IS NULL";
+    if (CRM_Core_DAO::singleValueQuery($sql)) {
+      $found[] = $displayName;
+    }
+  }
+
+  if (count($found)) {
+    $tsParams = array(
+      1 => implode(', ', $found),
+      2 => 'http://civicrm.stackexchange.com/a/7396/44',
+      'domain' => 'com.aghstrategies.zombiefinder',
+    );
+    $details = ts('Zombies found.  You have contacts who are undead or have null privacy options.  One or more contacts have null values in the following fields: %1.  <a href="%2">Read more about how to solve this.</a>', $tsParams);
+
+    $messages[] = new CRM_Utils_Check_Message(
+      'zombiefinder_found',
+      $details,
+      ts('Gaaargh! Braaaains!', array('domain' => 'com.aghstrategies.zombiefinder')),
+      \Psr\Log\LogLevel::WARNING,
+      'fa-user-times'
+    );
+
+  }
+}
+
+/**
  * Implementation of hook_civicrm_config
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_config
