@@ -17,7 +17,7 @@ function zombiefinder_civicrm_check(&$messages) {
   //     'is_deceased' => array('IS NULL' => 1),
   //   ));
   // }
-  // catch (CiviCRM_API3_Exception $e) {
+  // catch (CRM_Core_Exception $e) {
   //   CRM_Core_Error::debug_log_message($e->getMessage());
   // }
 
