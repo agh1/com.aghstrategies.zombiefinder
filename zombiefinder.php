@@ -34,19 +34,18 @@ function zombiefinder_civicrm_check(&$messages) {
   }
 
   if (count($found)) {
-    $tsParams = array(
+    $details = ts('Zombies found.  You have contacts who are undead or have null privacy options.  One or more contacts have null values in the following fields: %1.  <a href="%2">Read more about how to solve this.</a>',  [
       1 => implode(', ', $found),
       2 => 'http://civicrm.stackexchange.com/a/7396/44',
       'domain' => 'com.aghstrategies.zombiefinder',
-    );
-    $details = ts('Zombies found.  You have contacts who are undead or have null privacy options.  One or more contacts have null values in the following fields: %1.  <a href="%2">Read more about how to solve this.</a>', $tsParams);
+    ]);
 
     $messages[] = new CRM_Utils_Check_Message(
       'zombiefinder_found',
       $details,
       ts('Gaaargh! Braaaains!', array('domain' => 'com.aghstrategies.zombiefinder')),
       \Psr\Log\LogLevel::WARNING,
-      'fa-user-times'
+      'fa-biohazard'
     );
 
   }
