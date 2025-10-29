@@ -5,8 +5,8 @@
   <description>Adds a check to the system status to see if you have undead contacts or other boolean flags that are null.</description>
   <license>AGPL-3.0</license>
   <maintainer>
-    <author>Andrew Hunt</author>
-    <email>andrew@aghstrategies.com</email>
+    <author>AGH Strategies</author>
+    <email>info@aghstrategies.com</email>
   </maintainer>
   <urls>
     <url desc="Main Extension Page">https://civicrm.org/extensions/zombie-check</url>
